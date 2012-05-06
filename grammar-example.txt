@@ -1,10 +1,10 @@
 // This regexp is used before reading a new token to skip whitespace
-@@skip := [ \t\n]*
+@@skip := "[ \t\n]*" ;
 
 // Token names start with @
-@id := [a-zA-Z][a-zA-Z0-9_]*
-@int-literal := [0-9]+
-@float-literal := [0-9]+(\.[0-9]+)f
+@id := "[a-zA-Z][a-zA-Z0-9_]*" ;
+@int-literal := "[0-9]+" ;
+@float-literal := "[0-9]+(\.[0-9]+)f" ;
 
 // 'foo' defines a token matching the literal string 'foo' (no regexp)
 // which is internally translated to token name @$foo
@@ -21,7 +21,7 @@ stmt-assignment := @id -> ':=' => value ;
 
 comparsion := value => rel-op => value ;
 stmt-if := 'if' => comparsion => ':' => block ;
-block := statement* => @end ;
+block := statement* => 'end' ;
 
 // The rule which name starts with # is taken as the root rule
 #statement := ( stmt-var-decl | stmt-assignment | stmt-if ) => ';' ;

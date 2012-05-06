@@ -1,38 +1,27 @@
+// This regexp is used before reading a new token to skip whitespace
 @@skip := [ \t\n]*
 
+// Token names start with @
 @id := [a-zA-Z][a-zA-Z0-9_]*
-@integer := [0-9]+
-@float := [0-9]+(\.[0-9]+)f
+@int-literal := [0-9]+
+@float-literal := [0-9]+(\.[0-9]+)f
 
-@if := if
-@end := end
+// 'foo' defines a token matching the literal string 'foo' (no regexp)
+// which is internally translated to token name @$foo
+type := 'int' | 'float' ;
+value := @int-literal | @float-literal | @id ;
+rel-op := '==' | '!=' | '<' | '>' | '<=' | '>=' ;
 
-@eq := ==
-@neq := !=
-@lt := <
-@gt := >
-@le := <=
-@ge := >=
-@assign := :=
+// -> means "may follow", aka, backtracking is possible
+// => immediatelly aborts if the match fails, and prevents backtracking
+stmt-var-decl := @id -> ':' => type => initialization? ;
+initialization := ':=' => value ;
 
-@type-int := int
-@type-float := float
-
-@colon := :
-@semicolon := ;
-
-
-type := @type-int | @type-float ;
-value := @integer | @float | @id ;
-rel-op := @eq | @neq | @lt | @gt | @le | @ge ;
-
-stmt-var-decl := @id -> @colon => type => initialization? ;
-initialization := @assign => value ;
-
-stmt-assignment := @id -> @assign => value ;
+stmt-assignment := @id -> ':=' => value ;
 
 comparsion := value => rel-op => value ;
-stmt-if := @if => comparsion => @semicolon => block ;
-
+stmt-if := 'if' => comparsion => ':' => block ;
 block := statement* => @end ;
-statement := ( stmt-var-decl | stmt-assignment | stmt-if ) => @semicolon ;
+
+// The rule which name starts with # is taken as the root rule
+#statement := ( stmt-var-decl | stmt-assignment | stmt-if ) => ';' ;

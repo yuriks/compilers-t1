@@ -1,0 +1,17 @@
+@@skip := "(?s)\s*(?://.*?$|/\*.*?\*/)\s*" ;
+
+@token-id := "(@@?[a-z](?:-[a-z]+)*)" ;
+@rule-id := "(#?[a-z](?:-[a-z]+)*)" ;
+@token-literal := "'((?:\\(?:.|\n)|[^'\n])+)'" ;
+@token-match := "\"((?:\\(?:.|\n)|[^\"\n])+)\"" ;
+
+token-decl := @token-id => ':=' => @token-match ;
+rule-decl := @rule-id => ':=' => rule-expression ;
+
+rule-atom := @token-id | @rule-id | @token-literal | '(' => rule-expression => ')' ;
+rule-postfix-expr := rule-atom => ( '?' | '*' )? ;
+rule-follow-expr := rule-postfix-expr => ( ( '=>' | '->' ) => rule-postfix-expr )* ;
+rule-alternation-expr := rule-follow-expr => ( '|' => rule-follow-expr )* ;
+rule-expression := rule-alternation-expr ;
+
+#grammar := ( ( token-decl | rule-decl ) => ';' )* ;

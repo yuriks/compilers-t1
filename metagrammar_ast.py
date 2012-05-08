@@ -1,7 +1,5 @@
-from ast import \
-    Root, TokenDefinition, RuleDefinition, AlternationExpr, \
-    FollowExpr, PostfixExpr, Atom, TokenLiteral, RuleTokenId
-
+from ast import *
+   
 metagrammar = Root([
     TokenDefinition("@@skip",
         r"(?:\s*(?://[^\n]*\n)?)*"),

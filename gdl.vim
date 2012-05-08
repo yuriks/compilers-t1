@@ -16,13 +16,14 @@ syn region gdlTokenMatch start=/"/ skip=/\\"/ end=/"/ contained
 syn region gdlTokenLiteral start=/'/ skip=/\\'/ end=/'/ contained
 
 syn match gdlSkipToken /@@skip/
+syn match gdlEmptyToken /@@e/ contained
 syn match gdlRootRule /#\k\+/
 syn match gdlTokenId /@\k\+/ contained
 syn match gdlRuleId /\k\+/ contained
 
 syn match gdlOperator /|\|->\|=>\|?\|*/ contained
 
-syn region gdlRuleRHS matchgroup=gdlAssign start=/:=/ end=/;/ transparent contains=gdlTokenLiteral,gdlTokenId,gdlRuleId,gdlOperator,gdlTokenMatch
+syn region gdlRuleRHS matchgroup=gdlAssign start=/:=/ end=/;/ transparent contains=gdlTokenLiteral,gdlTokenId,gdlRuleId,gdlOperator,gdlTokenMatch,gdlEmptyToken
 
 let b:current_syntax = "gdl"
 hi link gdlComment Comment
@@ -31,6 +32,7 @@ hi link gdlTokenLiteral String
 hi link gdlTokenId Structure
 hi link gdlRuleId Function
 hi link gdlSkipToken Define
+hi link gdlEmptyToken Define
 hi link gdlRootRule Define
 hi link gdlOperator Operator
 hi link gdlAssign Operator

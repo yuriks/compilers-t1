@@ -10,7 +10,7 @@ rule-decl := @rule-id => ':=' => rule-expression ;
 
 rule-atom := @token-id | @rule-id | @token-literal | '(' => rule-expression => ')' ;
 rule-postfix-expr := rule-atom => ( '?' | '*' )? ;
-rule-follow-expr := rule-postfix-expr => ( ( '=>' | '->' ) => rule-postfix-expr )* ;
+rule-follow-expr := rule-postfix-expr => ( '=>' => rule-postfix-expr )* ;
 rule-alternation-expr := rule-follow-expr => ( '|' => rule-follow-expr )* ;
 rule-expression := rule-alternation-expr ;
 

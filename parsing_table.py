@@ -23,4 +23,4 @@ def first(x, rules):
             first_set = first_set.union({f for f in tmp_prodfirst if f != empty})
             if empty not in tmp_prodfirst:
                 break
-        return first_se                                   
+        return first_set                                   

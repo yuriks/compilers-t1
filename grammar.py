@@ -1,6 +1,7 @@
 import ast
 import ast_simplify
 import lexer
+import parsing_table
 
 class Grammar:
     def __init__(self):
@@ -26,3 +27,5 @@ class Grammar:
 
         lexer.add_literal_tokens(self.tokens, self.token_literals)
         self.lexer = lexer.Tokenizer(self.tokens)
+
+        self.table = parsing_table.build_parse_table(self.rules)

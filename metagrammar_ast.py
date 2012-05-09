@@ -58,11 +58,11 @@ metagrammar = Root([
         ])),
     RuleDefinition("rule-alternation-expr",
         FollowExpr([
-            RuleTokenId("rule-alternation-expr"),
+            RuleTokenId("rule-follow-expr"),
             PostfixExpr('*',
                 FollowExpr([
                     TokenLiteral('|'),
-                    RuleTokenId("rule-alternation-expr")
+                    RuleTokenId("rule-follow-expr")
                 ])
             )
         ])),

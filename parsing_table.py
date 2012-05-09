@@ -1,11 +1,17 @@
-def build_parse_table(grammar):
+def build_parse_table(rules):
     table = {}
-    for rule in grammar.rules:
-        for prod in grammar[rule]:
-            for ft in first(prod, grammar):
-                self.table[(grammar[rule], ft)] = prod
-            for fl in follow(prod, grammar):
-                self.table[(grammar[rule], fl)] = prod
+    follow_sets = follow(rules)
+
+    for rule in rules:
+        for prod in rules[rule]:
+            first_set = first(prod[0], rules)
+            for ft in first_set - {'@@e'}:
+                table[(rule, ft)] = prod
+            if '@@e' in first_set:
+                for fl in follow_sets[rule]:
+                    table[(rule, fl)] = prod
+
+    return table
 
 def first(symbol, rules):
     if symbol[0] == '@': # terminal (also handles empty '@@e')

@@ -34,4 +34,4 @@ def parse_grammar(grammar, token_stream):
             rule = grammar.table.get((stack_top, token_type), None)
             if rule is None:
                 raise ParseException(token)
-            stack += rule[::-1]
+            stack += [x for x in rule if x != '@@e'][::-1]

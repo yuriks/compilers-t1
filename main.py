@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     meta_gram = Grammar()
     meta_gram.load_from_ast(metagrammar)
-    
+
     with open(args.grammar) as grammar_input:
         g_token_stream = meta_gram.lexer.lex_input(grammar_input.read())
         grammar_ast = parse_grammar(meta_gram, g_token_stream)
@@ -31,14 +31,9 @@ if __name__ == '__main__':
     g = Grammar()
     g.load_from_ast(grammar_ast)
 
-    try:
-        if args.source != None:
-            with open(args.source) as code:
-                s_token_stream = g.lexer.lex_input(f.read())
-                parse_grammar(g, s_token_stream)
-        else:
-            parse_grammar(g, g.lexer.lex_input(sys.stdin.read()))
-
-    except ParseException: 
-            print(str(ParseExcetion))
-
+    if args.source != None:
+        with open(args.source) as code:
+            s_token_stream = g.lexer.lex_input(f.read())
+            parse_grammar(g, s_token_stream)
+    else:
+        parse_grammar(g, g.lexer.lex_input(sys.stdin.read()))

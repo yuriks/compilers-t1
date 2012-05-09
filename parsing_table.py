@@ -26,24 +26,37 @@ def first(symbol, rules):
 
         return first_set
 
-def follow(a, rules):
-    follow_set = set()
-    empty == '@@e'
+def tested_update(dest_set, src_set):
+    result_set = dest_set.union(src_set)
+    has_changed = dest_set != result_set
+    dest_set.update(src_set)
+    return has_changed
 
-    if a[0] == '#':
-        follow_set.add('@@eof')
-    r_rules = rules.copy()
-    del r_rules[a]
+def follow(rules):
+    follow_sets = {}
 
-    for rname, productions in r_rules:
-        for prod in productions:
-            try:
-                i = prod.index(a) 
-                first_beta = first(prop[i + 1])
-                follow_set = follow_set.union({b for b in first_beta if b != empty})
-                if empty in first_beta:
-                    follow_set = follow_set.union(follow(rname))
-                follow_set = follow_set.union(follow(prod))
-            except ValueError:
-                continue  
-    return follow_set
+    for rule in rules:
+        if rule[0] == '#': # starting rule
+            follow_sets[rule] = {'@@eof'}
+        else:
+            follow_sets[rule] = set()
+
+    changed = True
+    while changed:
+        changed = False
+        for rule in rules:
+            for production in rules[rule]:
+                for i in range(len(production)-1):
+                    if production[i][0] != '@':
+                        first_set = first(production[i+1], rules)
+                        changed = changed or tested_update(
+                            follow_sets[production[i]], first_set-{'@@e'})
+                        if '@@e' in first_set:
+                            changed = changed or tested_update(
+                                follow_sets[production[i]], follow_sets[rule])
+
+                if production[-1][0] != '@':
+                    changed = changed or tested_update(
+                        follow_sets[production[-1]], follow_sets[rule])
+
+    return follow_sets

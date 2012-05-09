@@ -12,7 +12,7 @@ def first(x, rules):
 
     if x[0] == '@': #terminals begin with @
         return {x}
-    elif x[0] == empty:
+    elif x == empty:
         return { empty }
     else:
         first_set = set()

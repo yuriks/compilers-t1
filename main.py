@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     if args.source != None:
         with open(args.source) as code:
-            s_token_stream = g.lexer.lex_input(f.read())
+            s_token_stream = g.lexer.lex_input(code.read())
             parse_grammar(g, s_token_stream)
     else:
         parse_grammar(g, g.lexer.lex_input(sys.stdin.read()))

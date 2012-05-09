@@ -4,6 +4,7 @@ from metagrammar_ast import metagrammar
 from ast_simplify import convert_ast_to_rule
 from parse import parse_grammar
 from grammar import Grammar
+import lexer
 
 #initializes the command line argument parser
 def init_clp():
@@ -20,13 +21,18 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     source = sys.stdin
-
-    meta_gram = Grammar()
-    meta_gram.load_from_ast(metagrammar)
+    tokens_info = {"@@skip" : r"(?:\s*(?://[^\n]*\n)?)*", \
+        "@token-id" : r"(@@?[a-z]+(?:-[a-z]+)*)" \
+        "@rule-id" : r"(#?[a-z]+(?:-[a-z]+)*)" \
+        "@token-literal" : r"(#?[a-z]+(?:-[a-z]+)*)" \
+        "@token-match" : '"' + r"((?:\\.|[^\"\n])+)" + '"' }
+    literals = [':=', '(', ')', '?', '*', '=>', '|', ';' ]
+    lexer.add_literal_tokens(tokens_info, literals)
+    lexer_g = lexer.Tokenizer(tokens_info)
 
     with open(args.grammar) as grammar_input:
-        g_token_stream = meta_gram.lexer.lex_input(grammar_input.read())
-        grammar_ast = parse_grammar(meta_gram, g_token_stream)
+        g_token_stream = lexer_g.lex_input(grammar_input.read())
+        grammar_ast = parse_grammar(g_token_stream)
 
     g = Grammar()
     g.load_from_ast(grammar_ast)

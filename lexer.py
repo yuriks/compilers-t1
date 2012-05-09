@@ -9,7 +9,7 @@ def add_literal_tokens(token_info, literals):
     """Auguments token_info with token info for the token literals in literals."""
 
     for l in literals:
-        token_info['@lit$' + l] = '(' + re.escape(l) + ')'
+        token_info['@$' + l] = '(' + re.escape(l) + ')'
 
 class Tokenizer(object):
     def __init__(self, token_info):

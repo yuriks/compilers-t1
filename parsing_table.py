@@ -45,4 +45,4 @@ def follow(a, rules):
                 follow_set = follow_set.union(follow(prod))
             except ValueError:
                 continue  
-
+    return follow_set

@@ -6,12 +6,11 @@
 @token-match := "\"((?:\\.|[^\"\n])+)\"" ;
 
 token-decl := @token-id => ':=' => @token-match ;
-rule-decl := @rule-id => ':=' => rule-expression ;
+rule-decl := @rule-id => ':=' => rule-alternation-expr ;
 
-rule-atom := @token-id | @rule-id | @token-literal | '(' => rule-expression => ')' ;
+rule-atom := @token-id | @rule-id | @token-literal | '(' => rule-alternation-expr => ')' ;
 rule-postfix-expr := rule-atom => ( '?' | '*' )? ;
 rule-follow-expr := rule-postfix-expr => ( '=>' => rule-postfix-expr )* ;
 rule-alternation-expr := rule-follow-expr => ( '|' => rule-follow-expr )* ;
-rule-expression := rule-alternation-expr ;
 
 #grammar := ( ( token-decl | rule-decl ) => ';' )* ;

@@ -22,7 +22,7 @@ metagrammar = Root([
         FollowExpr([
             RuleTokenId("@rule-id"),
             TokenLiteral(':='),
-            RuleTokenId("rule-expression")
+            RuleTokenId("rule-alternation-expr")
         ])),
 
     RuleDefinition("rule-atom",
@@ -32,7 +32,7 @@ metagrammar = Root([
             RuleTokenId("@token-literal"),
             FollowExpr([
                 TokenLiteral('('),
-                RuleTokenId("rule-expression"),
+                RuleTokenId("rule-alternation-expr"),
                 TokenLiteral(')')
             ])
         ])),
@@ -66,8 +66,6 @@ metagrammar = Root([
                 ])
             )
         ])),
-    RuleDefinition("rule-expression",
-        RuleTokenId("rule-alternation-expr")),
 
     RuleDefinition("#grammar",
         PostfixExpr('*',

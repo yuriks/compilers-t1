@@ -82,7 +82,7 @@ def simplify_PostfixExpr(grammar, rule_name, node):
             ast.FollowExpr([node.expression, ast.RuleTokenId(tmp_name)]),
             ast.RuleTokenId('@@e')])
 
-        new_expr = tmp_node
+        new_expr = ast.RuleTokenId(tmp_name)
         grammar.rules[tmp_name] = convert_ast_to_rule(grammar, tmp_name, tmp_node)
     elif node.operator is None:
         new_expr = node.expression

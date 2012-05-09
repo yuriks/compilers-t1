@@ -1,6 +1,6 @@
 class Parse:
     table = None
-    
+
     def __init__(self, table):
         self.table = table
 
@@ -15,7 +15,7 @@ class Parse:
         stack = ["@@EOF"]
         stack.append(self.chooseTheDestiny(self.table))
         inputTokens.append("@@EOF")
-        
+
         self.print_situation(stack, inputTokens)
         for char in inputTokens:
             try:
@@ -40,7 +40,7 @@ class Parse:
                 pass
             except KeyError:
                 pass
-            
+
             #retira o topo da pilha e verifica com o input
             c = stack.pop()
             if c == char:
@@ -54,7 +54,7 @@ class Parse:
             print("Input Accept")
         else:
             print("Incorrect Input")
-               
+
     def chooseTheDestiny(self, table):
         for x in table:
             pass
@@ -63,9 +63,9 @@ class Parse:
     def validate(self, inputText):
         inputTokens = []
         for i in inputText:
-            inputTokens.append("@$"+i)                   
+            inputTokens.append("@$"+i)
         self.validateSrc(inputTokens)
-   
+
     def setTable(self, table):
         self.table = table
 
@@ -76,5 +76,3 @@ class ParseException(Exception):
 
     def __str__(self):
         return "Unexpected %s. Was expecting %s." % (self.got, self.expected)
-
-

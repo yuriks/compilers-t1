@@ -1,59 +1,69 @@
 """
-Functions for creating nodes representing the parsed grammar AST.
-
-These exist mostly for purposes of documentation, and because they're more
-terse than classes.
+Classes representing the parsed grammar AST.
 """
 
 class Node:
-    def __init__(self, kind):
-        self.kind = kind
+    pass
 
-def Root(statements):
-    self = Node("Root")
-    self.statements = statements
-    return self
+class Root(Node):
+    def __init__(self, statements):
+        self.statements = statements
 
-def TokenDefinition(name, regexp):
-    self = Node("TokenDefinition")
-    self.name = name
-    self.regexp = regexp
-    return self
+    def __str__(self):
+        return ' ;\n'.join(map(str, self.statements)) + ' ;\n'
 
-def RuleDefinition(name, expression):
-    self = Node("RuleDefinition")
-    self.name = name
-    self.expression = expression
-    return self
+class TokenDefinition(Node):
+    def __init__(self, name, regexp):
+        self.name = name
+        self.regexp = regexp
 
-def AlternationExpr(expressions):
-    self = Node("AlternationExpr")
-    self.expressions = expressions
-    return self
+    def __str__(self):
+        return self.name + ' := "' + str(self.regexp) + '"'
 
-def FollowExpr(expressions):
-    self = Node("FollowExpr")
-    self.expressions = expressions
-    return self
+class RuleDefinition(Node):
+    def __init__(self, name, expression):
+        self.name = name
+        self.expression = expression
 
-def PostfixExpr(operator, expression):
-    self = Node("PostfixExpr")
-    self.expression = expression
-    # Either '?', '*' or None
-    self.operator = operator
-    return self
+    def __str__(self):
+        return self.name + ' := ' + str(self.expression)
 
-def Atom(expression):
-    self = Node("Atom")
-    self.expression = expression
-    return self
+class AlternationExpr(Node):
+    def __init__(self, expressions):
+        self.expressions = expressions
 
-def TokenLiteral(text):
-    self = Node("TokenLiteral")
-    self.text = text
-    return self
+    def __str__(self):
+        return '( ' + ' | '.join(map(str, self.expressions)) + ' )'
 
-def RuleTokenId(name):
-    self = Node("RuleTokenId")
-    self.name = name
-    return self
+class FollowExpr(Node):
+    def __init__(self, expressions):
+        self.expressions = expressions
+
+    def __str__(self):
+        return '( ' + ' => '.join(map(str, self.expressions)) + ' )'
+
+class PostfixExpr(Node):
+    def __init__(self, operator, expression):
+        self.expression = expression
+        # Either '?', '*' or None
+        self.operator = operator
+
+    def __str__(self):
+        if self.operator is not None:
+            return str(self.expression) + self.operator
+        else:
+            return str(self.expression)
+
+class TokenLiteral(Node):
+    def __init__(self, text):
+        self.text = text
+
+    def __str__(self):
+        return "'%s'" % (self.text,)
+
+class RuleTokenId(Node):
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return self.name

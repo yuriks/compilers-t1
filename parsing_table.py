@@ -1,29 +1,30 @@
-class ParsingTable:
-    def __init__(self, grammar):
-        pass
-#       tokens = grammar.tokens #TODO: get them real values
-#       table = {} # key: (token, rule name), value: what to do
-#       for rname, productions in grammar.rules.items():
-#            for token in symbols:
-#                pass
+def build_parse_table(grammar):
+    table = {}
+    for rule in grammar.rules:
+        for prod in grammar[rule]:
+            for ft in first(prod, grammar):
+                self.table[(grammar[rule], ft)] = prod
+            for fl in follow(prod, grammar):
+                self.table[(grammar[rule], fl)] = prod
 
-def first(x, rules):
-    empty = '@@e'
-
-    if x[0] == '@': #terminals begin with @
-        return {x}
-    elif x == empty:
-        return { empty }
-    else:
+def first(symbol, rules):
+    if symbol[0] == '@': # terminal (also handles empty '@@e')
+        return {symbol}
+    else: # non-terminal
         first_set = set()
-        prods = rules[x]
-        
-        for prod in rules[x]:
-            tmp_prodfirst = first(prod, rules) 
-            first_set = first_set.union({f for f in tmp_prodfirst if f != empty})
-            if empty not in tmp_prodfirst:
-                break
-        return first_set            
+
+        for production in rules[symbol]:
+            add_e = True
+            for prod_symbol in production:
+                prod_first = first(prod_symbol, rules)
+                first_set.update(prod_first - {'@@e'})
+                if '@@e' not in prod_first:
+                    add_e = False
+                    break
+            if add_e:
+                first_set.add('@@e')
+
+        return first_set
 
 def follow(a, rules):
     follow_set = set()

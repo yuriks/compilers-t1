@@ -1,78 +1,44 @@
-class Parse:
-    table = None
-
-    def __init__(self, table):
-        self.table = table
-
-    def __init__(self):
-        #self.table = {("#S","@$a") : ["@$a","@$+","@$b"]}
-        self.table = {("#S","@$a") : ["@$a","@$+","L"], ("L","@$a") : ["@$a","@$+","@$b"]}
-
-    def print_situation(self, mstack, minput):
-        print("Stack:", mstack , "Input:", minput)
-
-    def validateSrc(self, inputTokens):
-        stack = ["@@EOF"]
-        stack.append(self.chooseTheDestiny(self.table))
-        inputTokens.append("@@EOF")
-
-        self.print_situation(stack, inputTokens)
-        for char in inputTokens:
-            try:
-                #Procura por uma regra na table
-                s = self.table[(stack[len(stack) -1], char)]
-                while len(s) > 0:
-                    #não sei se vai ter regra de erro na tabela
-                    #qualquer coisa apagar até o else lá
-                    if s[0] == "@@ERROR":
-                        print('Error:', s[1])
-                        return
-                    else:
-                        stack.pop()
-                        t = []
-                        t.extend(s)
-                        t.reverse()
-                        for i in t:
-                            stack.append(i)
-                        self.print_situation(stack, inputTokens)
-                    s = self.table[(stack[len(stack) -1], char)]
-            except ValueError:
-                pass
-            except KeyError:
-                pass
-
-            #retira o topo da pilha e verifica com o input
-            c = stack.pop()
-            if c == char:
-                inputTokens = inputTokens[1::]
-            else:
-                raise ParseException(char,c)
-                return
-            self.print_situation(stack, inputTokens)
-        #Acabou o input, verifica se a pilha está vazia
-        if (len(stack) == 0) & (len(inputTokens) == 0):
-            print("Input Accept")
-        else:
-            print("Incorrect Input")
-
-    def chooseTheDestiny(self, table):
-        for x in table:
-            pass
-        return "#S"
-
-    def validate(self, inputText):
-        inputTokens = []
-        for i in inputText:
-            inputTokens.append("@$"+i)
-        self.validateSrc(inputTokens)
-
-    def setTable(self, table):
-        self.table = table
+class GrammarError(Exception):
+    pass
 
 class ParseException(Exception):
-    def __init__(self, got, expected):
+    def __init__(self, got):
         self.got = got
-        self.expected = expected
 
     def __str__(self):
-        return "Unexpected %s. Was expecting %s." % (self.got, self.expected)
+        return "Unexpected token %s." % (self.got,)
+
+
+def parse_grammar(grammar, token_stream):
+    # TODO remove
+    grammar.table = {
+        ('#S', '@('): ['@(', '#S', '@+', 'F', '@)'],
+        ('#S', '@a'): ['F'],
+        ('F',  '@a'): ['@a']
+    }
+
+    initial_rule = list(filter(lambda r: r[0] == '#', grammar.rules))
+    if len(initial_rule) != 1:
+        raise GrammarError("Grammar must have exactly one initial rule. (Name begins with '#'.)")
+    initial_rule = initial_rule[0]
+
+    stack = ["@@eof", initial_rule]
+    token_iter = iter(token_stream)
+    token = next(token_iter)
+
+    while True:
+        print("Stack:", stack , "Input:", token)
+
+        token_type, token_data = token
+        stack_top = stack.pop()
+
+        if stack_top == token_type:
+            if token_type == "@@eof":
+                break
+            else:
+                token = next(token_iter)
+        else:
+            rule = grammar.table.get((stack_top, token_type), None)
+            if rule is None:
+                raise ParseException(token)
+            stack += rule[::-1]

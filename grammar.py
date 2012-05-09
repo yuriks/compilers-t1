@@ -15,7 +15,7 @@ class Grammar:
     def generate_temp_name(self, rule_name):
         num = self.rule_unique_nums.get(rule_name, 0) + 1
         self.rule_unique_nums[rule_name] = num
-        return '%s$%d' % (rule_name, num)
+        return '$%s$%d' % (rule_name, num)
 
     def load_from_ast(self, ast_root):
         for st in ast_root.statements:

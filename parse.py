@@ -10,13 +10,6 @@ class ParseException(Exception):
 
 
 def parse_grammar(grammar, token_stream):
-    # TODO remove
-    grammar.table = {
-        ('#S', '@('): ['@(', '#S', '@+', 'F', '@)'],
-        ('#S', '@a'): ['F'],
-        ('F',  '@a'): ['@a']
-    }
-
     initial_rule = list(filter(lambda r: r[0] == '#', grammar.rules))
     if len(initial_rule) != 1:
         raise GrammarError("Grammar must have exactly one initial rule. (Name begins with '#'.)")

@@ -28,4 +28,4 @@ class Grammar:
         lexer.add_literal_tokens(self.tokens, self.token_literals)
         self.lexer = lexer.Tokenizer(self.tokens)
 
-        self.table = parsing_table.build_parse_table(self.rules)
+        self.table = parsing_table.build_parse_table(self.rules, self.tokens)

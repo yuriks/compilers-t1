@@ -1,16 +1,45 @@
+// The source may be annotated with single-line comments
+// using '//'.
+
+// All token names start with '@'.
+// Anything that doesn't start with '@' is a rule.
+
+// Tokens beginning with '@@' are special tokens.
+// '@@skip' is the pattern used by the lexer to skip over whitespace
+// or comments in-between other tokens.
 @@skip := "(?:\s*(?://[^\n]*\n)?)*" ;
 
+// Tokens definitions consist of a regexp that matches the token.
+// The regexps should include exactly one capture group, which will be the
+// token 'value' returned by the lexer in the pair.
 @token-id := "(@@?[a-z]+(?:-[a-z]+)*)" ;
 @rule-id := "(#?[a-z]+(?:-[a-z]+)*)" ;
 @token-literal := "'((?:\\.|[^'\n])+)'" ;
 @token-match := "\"((?:\\.|[^\"\n])+)\"" ;
 
+// Rule definitions consist of an expression.
+
+// Remember, symbols starting with '@' are terminals, or tokens.
+
+// Text encased by single quotes ('this') creates a token literal.
+// They're a shorthand way of defining and using a token matching exactly
+// that text.
+
+// 'a => b', means "a is followed by b".
 token-decl := @token-id => ':=' => @token-match ;
 rule-decl := @rule-id => ':=' => rule-alternation-expr ;
 
+// 'a | b' means alternation, meaning either expression matches.
 rule-atom := @token-id | @rule-id | @token-literal | '(' => rule-alternation-expr => ')' ;
+// '?' after an expression means it may or may not be present (0 or 1 times).
 rule-postfix-expr := rule-atom => ( '?' | '*' )? ;
+// '*' after an expression means it may match any number of times (0 to N times)
 rule-follow-expr := rule-postfix-expr => ( '=>' => rule-postfix-expr )* ;
+// Parenthesis are allowed
 rule-alternation-expr := rule-follow-expr => ( '|' => rule-follow-expr )* ;
 
+// A single grammar rule may have it's name start with '#' to indicate that
+// it is the starting or 'root' rule of the grammar.
 #grammar := ( ( token-decl | rule-decl ) => ';' )* ;
+
+// Not shown: @@eof is a special token representing the 'empty' symbol.

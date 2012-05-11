@@ -1,7 +1,7 @@
 def build_parse_table(rules, tokens):
     table = {}
-    first_sets = first(rules, tokens)
-    follow_sets = follow(rules, first_sets)
+    first_sets = calculate_first_sets(rules, tokens)
+    follow_sets = calculate_follow_sets(rules, first_sets)
 
     for rule in rules:
         for prod in rules[rule]:
@@ -27,7 +27,7 @@ def tested_add(dest_set, item):
         dest_set.add(item)
         return True
 
-def first(rules, tokens):
+def calculate_first_sets(rules, tokens):
     first_sets = {}
 
     for token in tokens:
@@ -56,7 +56,7 @@ def first(rules, tokens):
 
     return first_sets
 
-def follow(rules, first_sets):
+def calculate_follow_sets(rules, first_sets):
     follow_sets = {}
 
     for rule in rules:

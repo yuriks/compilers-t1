@@ -1,7 +1,5 @@
 import sys
 import argparse
-from metagrammar_ast import metagrammar
-from ast_simplify import convert_ast_to_rule
 from parse import parse_grammar
 from grammar import Grammar
 import grammar_parse

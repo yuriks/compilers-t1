@@ -20,14 +20,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     source = sys.stdin
-    tokens_info = {"@@skip" : r"(?:\s*(?://[^\n]*\n)?)*",
-        "@token-id" : r"(@@?[a-z]+(?:-[a-z]+)*)",
-        "@rule-id" : r"(#?[a-z]+(?:-[a-z]+)*)",
-        "@token-literal" : r"'((?:\\.|[^'\n])+)'",
-        "@token-match" : '"' + r"((?:\\.|[^\"\n])+)" + '"'}
-    literals = [':=', '(', ')', '?', '*', '=>', '|', ';']
-    lexer.add_literal_tokens(tokens_info, literals)
-    lexer_g = lexer.Tokenizer(tokens_info)
+    lexer_g = grammar_parse.create_lexer()
 
     with open(args.grammar) as grammar_input:
         g_token_stream = lexer_g.lex_input(grammar_input.read())

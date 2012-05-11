@@ -1,4 +1,5 @@
 import ast
+import lexer
 
 class ParseError(Exception):
     pass
@@ -111,4 +112,18 @@ def parse_grammar_rule(tokens):
 def parse_grammar(token_iter):
     return parse_grammar_rule(TokenPeek(token_iter))
 
-__all__ = ['parse_grammar', 'ParseError']
+def create_lexer():
+    tokens_info = {
+        "@@skip" : r"(?:\s*(?://[^\n]*\n)?)*",
+        "@token-id" : r"(@@?[a-z]+(?:-[a-z]+)*)",
+        "@rule-id" : r"(#?[a-z]+(?:-[a-z]+)*)",
+        "@token-literal" : r"'((?:\\.|[^'\n])+)'",
+        "@token-match" : '"' + r"((?:\\.|[^\"\n])+)" + '"'
+    }
+
+    literals = [':=', '(', ')', '?', '*', '=>', '|', ';']
+    lexer.add_literal_tokens(tokens_info, literals)
+
+    return lexer.Tokenizer(tokens_info)
+
+__all__ = ['parse_grammar', 'create_lexer', 'ParseError']
